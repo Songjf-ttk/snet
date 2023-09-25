@@ -44,5 +44,6 @@ void WebServer::Init()
     RegisterRouter("POST", "/logout", Logout);
     RegisterRouter("POST", "/signin", Signin);
     RegisterRouter("POST", "/reset-password", ResetPassword);
+    RegisterRouter("POST", "/produce-paper", ProducePaper);
     RegisterRouter("GET", "/get-question/{questionId}", GetQuesion);
 }

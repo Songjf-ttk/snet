@@ -25,7 +25,7 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 // out: json{success} 
 void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
-// api: /produce-paper
+// api: /produce-paper POST
 // in : json{difficulty,num}
 // out: json{success}
 void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
