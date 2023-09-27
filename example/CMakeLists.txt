@@ -25,7 +25,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/workflow/workflow-config.cmake.in")
 endif ()
 
 find_package(ZLIB REQUIRED)
-
+find_package(Poco REQUIRED Net)
 find_package(wfrest REQUIRED CONFIG HINTS ..)
 include_directories(
 	${OPENSSL_INCLUDE_DIR}
@@ -37,7 +37,7 @@ include_directories(
 link_directories(${WFREST_LIB_DIR} ${WORKFLOW_LIB_DIR})
 
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -fPIC -pipe -std=gnu90")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fPIC -pipe -std=c++11 -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -fPIC -pipe -std=c++11")
 
 if (APPLE)
 	set(WFREST_LIB wfrest workflow pthread OpenSSL::SSL OpenSSL::Crypto protobuf z)
@@ -45,7 +45,10 @@ else ()
 	set(WFREST_LIB wfrest)
 endif ()
 
-add_executable(WebServer webserver/main.cc webserver/server.cc webserver/util.cc)
+
+add_executable(WebServer webserver/main.cc webserver/server.cc webserver/util.cc webserver/email.cc 
+				webserver/class/user.cc webserver/class/math_problem.cc webserver/class/derive_math_problem.cc)
+target_link_libraries(WebServer Poco::Net)
 target_link_libraries(WebServer wfrest)
 
 

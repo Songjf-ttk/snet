@@ -2,10 +2,11 @@
 #define _UTIL_H_
 #include "workflow/WFFacilities.h"
 #include "wfrest/HttpServer.h"
+#include "email.h"
 
 // api: /login POST
-// in : json{user,password}
-// out: json{success} 
+// in : json{account, password}
+// out: json{success, info} 
 void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 // api: /logout POST
@@ -13,26 +14,33 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 // out: json{success}
 void Logout(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
+// api: /signinpre POST
+// in : json{email}
+// out: json{success}
+void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 // api: /signin POST
-// in : json{user,password1,password2,email}
-// out: json{success}
+// in : json{username, password1, password2, email}
+// out: json{success, info}
 void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 
 // api: /reset-password POST
-// in : json{oldpassword,newpassword1,newpassword2}
-// out: json{success} 
+// in : json{oldpassword, newpassword1, newpassword2}
+// out: json{success, info} 
 void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 // api: /produce-paper POST
-// in : json{difficulty,num}
+// in : json{type, num}
 // out: json{success}
 void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 // api: /get-question/{questionId} GET
 // in : null
-// out: json{quesiton,options}
+// out: json{quesiton, optionA, optionsB, optionsC, 
+//           optionD, correctAns, currentAns}
 void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
+
+bool SendEmail(std::string &to_email, std::string &to_name);
 #endif
