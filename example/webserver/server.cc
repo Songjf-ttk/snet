@@ -29,15 +29,14 @@ void WebServer::RegisterRouter(std::string type, std::string route, wfrest::Hand
 {
     if(type == "POST")
     {
-        svr_.POST(route, callback);
+        svr_.ROUTE(route, callback, {"POST", "OPTIONS"});
     } else if(type == "GET")
     {
-        svr_.GET(route, callback);
+        svr_.ROUTE(route, callback, {"GET", "OPTIONS"});
     }else 
     {
-        svr_.ROUTE(route, callback, {"GET", "POST"});
+        svr_.ROUTE(route, callback, {"GET", "POST", "OPTINOS"});
     }
-    svr_.ROUTE(route, options, {"OPTIONS"});
 }
 
 void WebServer::Init()

@@ -46,5 +46,4 @@ bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifyc
 
 std::string readFile(const std::string&);
 
-void options(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 #endif

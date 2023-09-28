@@ -39,14 +39,6 @@ bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifyc
     return sendsuccess;
 }
 
-void options(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
-{
-    resp->add_header("Access-Control-Allow-Origin", "*");
-    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    resp->add_header("Access-Control-Allow-Credentials", "true");
-}
-
 void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
     std::string account = req->json()["account"];
@@ -62,6 +54,8 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         json["success"] = false;
         json["info"] = "account doesn't exit";
         resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if(ret == -2)
@@ -69,12 +63,16 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         json["success"] = false;
         json["info"] = "password error";
         resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
     json["success"] = true;
     json["info"] = "login success";
     resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
     
 }
@@ -84,6 +82,8 @@ void Logout(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     wfrest::Json json;
     json["success"] = true;
     resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
 }
 
@@ -105,6 +105,8 @@ void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     else 
         json["success"] = false;
     resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
 }
 
@@ -122,6 +124,9 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     if (sendcode != verifycode)
     {
         json["info"] = "verifycode error";
+        resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
@@ -134,16 +139,25 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     if(ret == -1)
     {
         json["info"] = "username duplicate";
+        resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if (ret == -2)
     {
         json["info"] = "The passwords entered twice are different";
+        resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if(ret == -3)
     {
         json["info"] = "The password does not meet the requirements";
+        resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
@@ -151,6 +165,8 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     json["success"] = true;
     json["info"] = "register success";
     resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
 }
 
@@ -169,13 +185,17 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         json["success"] = false;
         json["info"] = "oldpassword error";
         resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if(ret == -2)
     {
         json["success"] = false;
         json["info"] = "The passwords entered twice are different";
-        resp->add_header("Access-Control-Allow-Origin", "*");          
+        resp->add_header("Access-Control-Allow-Origin", "*");       
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");   
         resp->Json(json);
         return;
     }else if(ret == -3)
@@ -183,6 +203,8 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         json["success"] = false;
         json["info"] = "The password does not meet the requirements";
         resp->add_header("Access-Control-Allow-Origin", "*");
+        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
@@ -190,6 +212,8 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     json["success"] = true;
     json["info"] = "reset password success";
     resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
 }
 
