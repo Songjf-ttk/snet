@@ -31,7 +31,7 @@ export default (await import('vue')).defineComponent({
         password: this.password
       };
       //alert("进行登录");
-      alert(JSON.stringify(returnData));
+      //alert(JSON.stringify(returnData));
       axios.defaults.headers.post["Content-Type"] = "application/json";
       axios
         .post("http://120.78.196.67:8000/login",JSON.stringify(returnData))

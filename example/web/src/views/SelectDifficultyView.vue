@@ -2,13 +2,15 @@
   用户名：{{ this.$store.state.username }}
   <p>
     <button @click="edit_password()">修改密码</button> |
-    <button @click="relogin()">返回登录</button>
+    <button @click="relogin()">退出登录</button>
   </p>
   <SelectDifficulty/>
 </template>
 
 <script>
 import SelectDifficulty from '@/components/SelectDifficulty.vue';
+import axios from 'axios'
+import { initCustomFormatter } from 'vue';
 export default {
   name: 'SelectDiffuicultyView',
   components: {
@@ -25,19 +27,19 @@ export default {
       }
     },
     relogin() {
-      alert("返回登录");
+      /*    无用
+      var returnData = {};
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/logout",JSON.stringify(returnData))
+        .post("http://120.78.196.67:8000/logout",JSON.stringify(""))
         .then((res)=>{
           if(res.data.success == true){发送题目信息,获取返回
             this.$router.push("/");
           }
-      })
-      
+      })*/
+      this.$router.push("/");
     },
     edit_password() {
-      alert("修改密码");
       this.$router.push("/edit_password");
     }
   }

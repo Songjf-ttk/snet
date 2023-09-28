@@ -13,7 +13,7 @@ sudo make install
 ```
 
 #### 配置
-在 example/webserver/util.cc 的 SendEmail 函数中配置你的邮箱和密码
+在 example 的 config.txt 中放入邮箱和密码
 
 #### 编译webserver
 ```

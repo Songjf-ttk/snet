@@ -346,9 +346,9 @@ void UploadAnswers(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     std::string account = req->json()["account"];
     std::string IdStr = req->json()["n_problem"];
     int Id = std::stoi(IdStr);
-    std::string anwser = req->json()["anwser"];
+    std::string answer = req->json()["answer"];
     std::shared_ptr<User> user = std::make_shared<Student>(account);
-    user->set_answer(Id, anwser.c_str()[0]);
+    user->set_answer(Id, answer.c_str()[0]);
     json["success"] = true;
     resp->Json(json);
 }

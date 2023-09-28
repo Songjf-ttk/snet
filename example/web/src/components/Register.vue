@@ -45,13 +45,16 @@ export default (await import('vue')).defineComponent({
       this.password2=null
     },
     sentvcode() {
-      alert("发送验证码");
+      if(this.email==null) {
+        alert("emial should be not null");
+        return;
+      }
       var returnData = {
         email:this.email,
       }
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67/signinpre",JSON.stringify(returnData))
+        .post("http://120.78.196.67:8000/signinpre",JSON.stringify(returnData))
         .then((res)=>{
           if(res.data.success == true) {//发送验证码成功
             alert("发送成功");

@@ -139,7 +139,8 @@ int Student::SetProblem(std::string type, int n) {
   problem_set_ = math_problem->GetProblemSet(n);
   WriteProblemSet();
   delete math_problem;
-  if(problem_set_.size() != n) {
+  int size = problem_set_.size();
+  if(size != n) {
     return -1;
   }
   num_problem_ = n;
@@ -147,32 +148,37 @@ int Student::SetProblem(std::string type, int n) {
 }
 
 int Student::EditPassword(std::string oldpassword, std::string new_password_1, std::string new_password_2) {
-  if(oldpassword != password_) {
-    return -1;
-  }else if(new_password_1 != new_password_2) {
-    return -2;  //两次密码不同
-  }else if(!CheckPasswordSuit(new_password_1)) {
-    return -3;
-  }
+  int state = 1;
   vector_user vuser = ReturnUser();
   int vuser_size = vuser.size();
   std::ofstream write_file;
   write_file.open("webserver/class/user_information.txt", std::ios::out | std::ios::trunc);
   for(int i = 0; i < vuser_size; ++i) {
     if(std::get<1>(vuser.at(i)) == account_) {
-      std::get<2>(vuser.at(i)) = new_password_1;
+      if(std::get<2>(vuser.at(i)) == oldpassword) {
+        if(new_password_1 != new_password_2) {
+          state = -2;  //两次密码不同
+        }else if(!CheckPasswordSuit(new_password_1)) {
+          state = -3;
+        }else {
+          std::get<2>(vuser.at(i)) = new_password_1;
+        }
+      }else {
+        state = -1;
+      }
     }
     write_file << std::get<0>(vuser.at(i)) << " " << 
                   std::get<1>(vuser.at(i)) << " " <<
                   std::get<2>(vuser.at(i)) << "\n";
   }
-  return 1;
+  return state;
 }
 
 void Student::WriteProblemSet(){
   std::ofstream write_file;
   write_file.open("webserver/class/problems/"+account_, std::ios::out | std::ios::trunc);
-  for(int i = 0; i < problem_set_.size(); ++i) {
+  int size = problem_set_.size();
+  for(int i = 0; i < size; ++i) {
     write_file << std::get<0>(problem_set_.at(i)) << " " << std::get<1>(problem_set_.at(i)) << " "
                << std::get<2>(problem_set_.at(i)) << " " << std::get<3>(problem_set_.at(i)) << " "
                << std::get<4>(problem_set_.at(i)) << " " << std::get<5>(problem_set_.at(i)) << " "
@@ -200,7 +206,8 @@ vector_user Student::ReturnUser() {
   std::ifstream read_file;
   read_file.open("webserver/class/user_information.txt", std::ios::in);
   tuple_user tuser;
-  while(read_file >> std::get<0>(tuser) >> std::get<1>(tuser) >> std::get<2>(tuser)) {
+  while(read_file >> std::get<0>(tuser) >> std::get<1>(tuser) 
+                  >> std::get<2>(tuser)) {
     vuser.push_back(tuser);
   }
   read_file.close();
@@ -233,6 +240,7 @@ std::string Student::get_username()
 double Student::get_score()
 {
   ReadProblemSet();
+  num_problem_ = problem_set_.size();
   double correct_num = 0;
   for(int i = 0; i < num_problem_; ++i) {
     if(std::get<5>(problem_set_.at(i)) == std::get<6>(problem_set_.at(i))) {
@@ -243,5 +251,7 @@ double Student::get_score()
 }
 
 int Student::get_num_problem() {
+  ReadProblemSet();
+  num_problem_ = problem_set_.size();
   return num_problem_;
 }

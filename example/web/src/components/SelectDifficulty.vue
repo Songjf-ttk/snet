@@ -41,7 +41,7 @@ export default (await import('vue')).defineComponent({
           num:this.num,
           account:this.$store.state.account
         }
-        alert(JSON.stringify(returnData));
+        //alert(JSON.stringify(returnData));
         axios.defaults.headers.post["Content-type"]="application/json";
         axios
           .post("http://120.78.196.67:8000/produce-paper",JSON.stringify(returnData))

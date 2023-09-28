@@ -57,15 +57,17 @@ export default (await import('vue')).defineComponent({
         questionId:this.now_num,
         account:this.$store.state.account
       }
-      alert(JSON.stringify(returnData));
+      //alert(JSON.stringify(returnData));
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
         .post("http://120.78.196.67:8000/get-question/"+this.now_num,JSON.stringify(returnData))
         .then((res)=>{
+          //alert(res.data.question);
+          //alert(res.data.optionA);
           this.problem=res.data.question;
-          this.selection.A=res.date.optionA;
+          this.selection.A=res.data.optionA;
           this.selection.B=res.data.optionB;
-          this.selection.C=res.date.optionC;
+          this.selection.C=res.data.optionC;
           this.selection.D=res.data.optionD;
         })
     },
@@ -75,15 +77,14 @@ export default (await import('vue')).defineComponent({
         return
       }
       var returnData = {
-        n_problem:this.now_num,
+        n_problem:this.now_num+"",
         answer:this.answer,
-        account:this.account
+        account:this.$store.state.account
       }
-      alert(JSON.stringify(returnData));
-      alert(JSON.stringify(returnData));
+      //alert(JSON.stringify(returnData));
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/upload-abswer",JSON.stringify(returnData))
+        .post("http://120.78.196.67:8000/upload-answer",JSON.stringify(returnData))
         .then((res)=>{
         })
       this.answer = null;

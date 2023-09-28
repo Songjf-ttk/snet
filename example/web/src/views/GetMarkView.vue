@@ -9,12 +9,14 @@
   
 <script>
 // @ is an alias to /src
+import axios from 'axios'
+import { initCustomFormatter } from 'vue';
   
 export default {
   name: 'GrtMarkView',
   data() {
       return {
-          mark:0,
+          mark:0.0,
       }
   },
   mounted:function(){
