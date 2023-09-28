@@ -102,15 +102,29 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 void Logout(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
     wfrest::Json json;
-    json["success"] = true;
     resp->add_header("Access-Control-Allow-Origin", "*");
     resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
     resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
+    json["success"] = true;
     resp->Json(json);
 }
 
 void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
     std::string email = req->json()["email"];
     std::string name = "teacher";
     std::random_device rd;
@@ -119,36 +133,39 @@ void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     int code = distr(eng);
     std::string verifycode = std::to_string(code);
     bool send_success = SendEmail(email, name, verifycode);
-    wfrest::Json json;
+    
     if(send_success){
         resp->Save("code/"+email, verifycode);
         json["success"] = true;
     }
     else 
         json["success"] = false;
-    resp->add_header("Access-Control-Allow-Origin", "*");
-    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
     resp->Json(json);
 }
 
 void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
     std::string username = req->json()["username"];
     std::string password1 = req->json()["password1"];
     std::string password2 = req->json()["password2"];
     std::string email = req->json()["email"];
     std::string verifycode = req->json()["verifycode"];
 
-    wfrest::Json json;
     json["success"] = false;
     std::string sendcode = readFile("code/"+email);
     if (sendcode != verifycode)
     {
         json["info"] = "verifycode error";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
@@ -161,43 +178,39 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     if(ret == -1)
     {
         json["info"] = "username duplicate";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if (ret == -2)
     {
         json["info"] = "The passwords entered twice are different";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if(ret == -3)
     {
         json["info"] = "The password does not meet the requirements";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
 
     json["success"] = true;
     json["info"] = "register success";
-    resp->add_header("Access-Control-Allow-Origin", "*");
-    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
 }
 
 void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
     std::string oldpassword = req->json()["oldpassword"];
     std::string newpassword1 = req->json()["newpassword1"];
     std::string newpassword2 = req->json()["newpassword2"];
-    wfrest::Json json;
 
     std::shared_ptr<User> user = std::make_shared<Student>();
     int ret = user->EditPassword(oldpassword, newpassword1, newpassword2);
@@ -206,36 +219,25 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     {
         json["success"] = false;
         json["info"] = "oldpassword error";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if(ret == -2)
     {
         json["success"] = false;
-        json["info"] = "The passwords entered twice are different";
-        resp->add_header("Access-Control-Allow-Origin", "*");       
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");   
+        json["info"] = "The passwords entered twice are different"; 
         resp->Json(json);
         return;
     }else if(ret == -3)
     {
         json["success"] = false;
         json["info"] = "The password does not meet the requirements";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
 
     json["success"] = true;
     json["info"] = "reset password success";
-    resp->add_header("Access-Control-Allow-Origin", "*");
-    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
     resp->Json(json);
 }
 
@@ -244,6 +246,16 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 
 void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
+    
     std::string type = req->json()["type"];
     int question_num = req->json()["num"];
     
@@ -251,7 +263,6 @@ void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     std::shared_ptr<User> user = std::make_shared<Student>();
     int ret = user->SetProblem(type, question_num);
 
-    wfrest::Json json;
     if(ret == -1)
     {
         json["success"] = false;
@@ -265,13 +276,21 @@ void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 
 void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
     std::string numstr = req->param("questionId");
     int num = std::stoi(numstr);
     // 获取题目
     std::shared_ptr<User> user = std::make_shared<Student>();
     vtuple question = user->get_problem(num);
 
-    wfrest::Json json;
     json["question"] =  std::get<0>(question);
     json["optionA"] = std::get<1>(question);
     json["optionB"] = std::get<2>(question);
@@ -285,9 +304,17 @@ void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 
 void GetScore(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
     std::shared_ptr<User> user = std::make_shared<Student>();
     double score = user->get_score();
-    wfrest::Json json;
     json["success"] = true;
     json["score"] = score;
     resp->Json(json);
