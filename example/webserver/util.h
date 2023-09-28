@@ -45,4 +45,6 @@ void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifycode);
 
 std::string readFile(const std::string&);
+
+void options(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 #endif
