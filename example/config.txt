@@ -1,0 +1,3 @@
+smtp_server:smtp.example.com
+from_email:youremail
+password:yourpassword

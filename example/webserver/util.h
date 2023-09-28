@@ -1,5 +1,6 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
+#include <map>
 #include "workflow/WFFacilities.h"
 #include "wfrest/HttpServer.h"
 #include "email.h"
@@ -41,9 +42,15 @@ void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 //           optionD, correctAns, currentAns}
 void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
+//api: /get-score GET
+//in : null
+//out: json{success, score}
+void GetScore(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifycode);
 
 std::string readFile(const std::string&);
+
+std::map<std::string, std::string> loadConfig(const std::string& filename);
 
 #endif

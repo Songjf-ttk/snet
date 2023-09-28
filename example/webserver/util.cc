@@ -21,12 +21,37 @@ std::string readFile(const std::string &filename)
     return buffer.str();
 }
 
+std::map<std::string, std::string> loadConfig(const std::string& filename) {
+    std::map<std::string, std::string> config;
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Could not open config file: " << filename << std::endl;
+        return config;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream is_line(line);
+        std::string key;
+        if (std::getline(is_line, key, ':')) {
+            std::string value;
+            if (std::getline(is_line, value)) {
+                config[key] = value;
+            }
+        }
+    }
+
+    return config;
+}
+
 bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifycode)
 {
-    std::string smtp_server = "smtp.example.com";
+    
+    auto config = loadConfig("config.txt");
+    std::string smtp_server = config["smtp_server"];
     int smtp_port = 25;
-    std::string from_email = "example@126.com";
-    std::string password = "yourpassword";
+    std::string from_email = config["from_email"];
+    std::string password = config["password"];
     std::string email_subject = "Webserver verification code";
     std::string email_body =  "verification code is: "+verifycode+
                         "\n"
@@ -99,7 +124,7 @@ void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     bool send_success = SendEmail(email, name, verifycode);
     wfrest::Json json;
     if(send_success){
-        resp->Save(email, verifycode);
+        resp->Save("code/"+email, verifycode);
         json["success"] = true;
     }
     else 
@@ -120,7 +145,7 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 
     wfrest::Json json;
     json["success"] = false;
-    std::string sendcode = readFile(email);
+    std::string sendcode = readFile("code/"+email);
     if (sendcode != verifycode)
     {
         json["info"] = "verifycode error";
@@ -130,7 +155,7 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         resp->Json(json);
         return;
     }
-    std::filesystem::remove(email);
+    std::filesystem::remove("code/"+email);
     // 注册
     std::shared_ptr<User> user = std::make_shared<Student>();
     int ret = user->Register(username, email, password1, password2);
@@ -261,3 +286,12 @@ void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     resp->Json(json);
 }
 
+void GetScore(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
+{
+    std::shared_ptr<User> user = std::make_shared<Student>();
+    double score = user->get_score();
+    wfrest::Json json;
+    json["success"] = true;
+    json["score"] = score;
+    resp->Json(json);
+}
