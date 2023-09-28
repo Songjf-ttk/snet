@@ -1,9 +1,27 @@
 #include "util.h"
 #include <memory>
 #include <random>
+#include <fstream>
+#include <filesystem>
 #include "class/user.h"
 
-bool SendEmail(std::string &to_email, std::string &to_name)
+std::string readFile(const std::string &filename)
+{
+    std::string content;
+    if(!std::filesystem::exists(filename)){
+        return content;
+    }
+    std::ifstream file(filename);
+    if(!file){
+        return content;
+    }
+
+    std::stringstream buffer;
+    buffer<<file.rdbuf();
+    return buffer.str();
+}
+
+bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifycode)
 {
     std::string smtp_server = "smtp.example.com";
     int smtp_port = 25;
@@ -40,17 +58,20 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     {      
         json["success"] = false;
         json["info"] = "account doesn't exit";
+        resp->add_header("Access-Control-Allow-Origin", "*");
         resp->Json(json);
         return;
     }else if(ret == -2)
     {
         json["success"] = false;
         json["info"] = "password error";
+        resp->add_header("Access-Control-Allow-Origin", "*");
         resp->Json(json);
         return;
     }
     json["success"] = true;
     json["info"] = "login success";
+    resp->add_header("Access-Control-Allow-Origin", "*");
     resp->Json(json);
     
 }
@@ -59,6 +80,7 @@ void Logout(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
     wfrest::Json json;
     json["success"] = true;
+    resp->add_header("Access-Control-Allow-Origin", "*");
     resp->Json(json);
 }
 
@@ -66,12 +88,20 @@ void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
     std::string email = req->json()["email"];
     std::string name = "teacher";
-    bool send_success = SendEmail(email, name);
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_int_distribution<> distr(100000, 999999);
+    int code = distr(eng);
+    std::string verifycode = std::to_string(code);
+    bool send_success = SendEmail(email, name, verifycode);
     wfrest::Json json;
-    if(send_success)
+    if(send_success){
+        resp->Save(email, verifycode);
         json["success"] = true;
+    }
     else 
         json["success"] = false;
+    resp->add_header("Access-Control-Allow-Origin", "*");
     resp->Json(json);
 }
 
@@ -81,14 +111,23 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     std::string password1 = req->json()["password1"];
     std::string password2 = req->json()["password2"];
     std::string email = req->json()["email"];
+    std::string verifycode = req->json()["verifycode"];
 
     wfrest::Json json;
-
+    json["success"] = false;
+    std::string sendcode = readFile(email);
+    if (sendcode != verifycode)
+    {
+        json["info"] = "verifycode error";
+        resp->Json(json);
+        return;
+    }
+    std::filesystem::remove(email);
     // 注册
     std::shared_ptr<User> user = std::make_shared<Student>();
     int ret = user->Register(username, email, password1, password2);
     
-    json["success"] = false;
+    
     if(ret == -1)
     {
         json["info"] = "username duplicate";
@@ -108,6 +147,7 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 
     json["success"] = true;
     json["info"] = "register success";
+    resp->add_header("Access-Control-Allow-Origin", "*");
     resp->Json(json);
 }
 
@@ -125,24 +165,28 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     {
         json["success"] = false;
         json["info"] = "oldpassword error";
+        resp->add_header("Access-Control-Allow-Origin", "*");
         resp->Json(json);
         return;
     }else if(ret == -2)
     {
         json["success"] = false;
         json["info"] = "The passwords entered twice are different";
+        resp->add_header("Access-Control-Allow-Origin", "*");          
         resp->Json(json);
         return;
     }else if(ret == -3)
     {
         json["success"] = false;
         json["info"] = "The password does not meet the requirements";
+        resp->add_header("Access-Control-Allow-Origin", "*");
         resp->Json(json);
         return;
     }
 
     json["success"] = true;
     json["info"] = "reset password success";
+    resp->add_header("Access-Control-Allow-Origin", "*");
     resp->Json(json);
 }
 

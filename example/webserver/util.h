@@ -20,7 +20,7 @@ void Logout(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 void SigninPre(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 // api: /signin POST
-// in : json{username, password1, password2, email}
+// in : json{username, password1, password2, email, verifycode}
 // out: json{success, info}
 void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
@@ -42,5 +42,7 @@ void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 
-bool SendEmail(std::string &to_email, std::string &to_name);
+bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifycode);
+
+std::string readFile(const std::string&);
 #endif

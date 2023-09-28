@@ -5,6 +5,7 @@ WebServer::WebServer() {
     svr_.ROUTE("/404", [](const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     {
         std::string method(req->get_method());
+        resp->add_header("Access-Control-Allow-Origin", "*");
         resp->String(std::move(method) + " 404 not found\n");
     }, {"GET", "POST"});
     svr_.set_default_route("/404");
