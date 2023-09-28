@@ -69,7 +69,14 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     std::string account = req->json()["account"];
     std::string password = req->json()["password"];
     wfrest::Json json;
-
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
     // 判断密码是否正确
     std::shared_ptr<User> user = std::make_shared<Student>();
     int ret = user->Login(account, password);
@@ -78,28 +85,18 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
     {      
         json["success"] = false;
         json["info"] = "account doesn't exit";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }else if(ret == -2)
     {
         json["success"] = false;
         json["info"] = "password error";
-        resp->add_header("Access-Control-Allow-Origin", "*");
-        resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-        resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         resp->Json(json);
         return;
     }
     json["success"] = true;
     json["info"] = "login success";
-    resp->add_header("Access-Control-Allow-Origin", "*");
-    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     resp->Json(json);
-    
 }
 
 void Logout(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
