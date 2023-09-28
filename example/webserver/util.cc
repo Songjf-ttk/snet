@@ -66,8 +66,6 @@ bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifyc
 
 void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
-    std::string account = req->json()["account"];
-    std::string password = req->json()["password"];
     wfrest::Json json;
     resp->add_header("Access-Control-Allow-Origin", "*");
     resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -77,6 +75,8 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         resp->Json(json);
         return;
     }
+    std::string account = req->json()["account"];
+    std::string password = req->json()["password"];
     // 判断密码是否正确
     std::shared_ptr<User> user = std::make_shared<Student>();
     int ret = user->Login(account, password);
