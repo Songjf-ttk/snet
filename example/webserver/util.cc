@@ -42,9 +42,6 @@ bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifyc
 void options(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
 {
     resp->add_header("Access-Control-Allow-Origin", "*");
-    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    resp->add_header("Access-Control-Allow-Headers", "Content-Type");
-    resp->String("");
 }
 
 void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
