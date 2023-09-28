@@ -27,11 +27,6 @@ bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifyc
     int smtp_port = 25;
     std::string from_email = "example@126.com";
     std::string password = "yourpassword";
-    std::random_device rd;
-    std::mt19937 eng(rd());
-    std::uniform_int_distribution<> distr(100000, 999999);
-    int code = distr(eng);
-    std::string verifycode = std::to_string(code);
     std::string email_subject = "Webserver verification code";
     std::string email_body =  "verification code is: "+verifycode+
                         "\n"
