@@ -37,6 +37,7 @@ void WebServer::RegisterRouter(std::string type, std::string route, wfrest::Hand
     {
         svr_.ROUTE(route, callback, {"GET", "POST"});
     }
+    svr_.ROUTE(route, options, {"OPTIONS"});
 }
 
 void WebServer::Init()
