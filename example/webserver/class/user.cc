@@ -16,7 +16,7 @@ Student::Student() {
 int Student::Login(std::string account, std::string password) {
   int state = -1;   //账号不存在
   std::ifstream read_file;
-  read_file.open("user_information.txt", std::ios::in);
+  read_file.open("webserver/class/user_information.txt", std::ios::in);
   std::string read_username;
   std::string read_account;
   std::string read_password;
@@ -47,7 +47,7 @@ int Student::CheckExist(std::string account) {
 bool Student::CheckAccount(std::string account) {
   bool state = true;
   std::ifstream read_file;
-  read_file.open("user_information.txt", std::ios::in);
+  read_file.open("webserver/class/user_information.txt", std::ios::in);
   std::string read_username;
   std::string read_account;
   std::string read_password;
@@ -64,7 +64,7 @@ bool Student::CheckAccount(std::string account) {
 bool Student::CheckUsername(std::string username) {
   bool state = true;
   std::ifstream read_file;
-  read_file.open("user_information.txt", std::ios::in);
+  read_file.open("webserver/class/user_information.txt", std::ios::in);
   std::string read_username;
   std::string read_account;
   std::string read_password;
@@ -109,7 +109,7 @@ int Student::Register(std::string username,
     return -3;
   }
   std::ofstream write_file;
-  write_file.open("user_information.txt", std::ios::out | std::ios::app);
+  write_file.open("webserver/class/user_information.txt", std::ios::out | std::ios::app);
   write_file << username << " " << account << " " << password_1 << "\n";
   username_ = username;
   account_ = account;
@@ -148,7 +148,7 @@ int Student::EditPassword(std::string oldpassword, std::string new_password_1, s
   vector_user vuser = ReturnUser();
   int vuser_size = vuser.size();
   std::ofstream write_file;
-  write_file.open("user_information.txt", std::ios::out | std::ios::trunc);
+  write_file.open("webserver/class/user_information.txt", std::ios::out | std::ios::trunc);
   for(int i = 0; i < vuser_size; ++i) {
     if(std::get<1>(vuser.at(i)) == account_) {
       std::get<2>(vuser.at(i)) = new_password_1;
@@ -163,7 +163,7 @@ int Student::EditPassword(std::string oldpassword, std::string new_password_1, s
 vector_user Student::ReturnUser() {
   vector_user vuser;
   std::ifstream read_file;
-  read_file.open("user_information.txt", std::ios::in);
+  read_file.open("webserver/class/user_information.txt", std::ios::in);
   tuple_user tuser;
   while(read_file >> std::get<0>(tuser) >> std::get<1>(tuser) >> std::get<2>(tuser)) {
     vuser.push_back(tuser);
