@@ -22,6 +22,7 @@ vector_tuple MathProblem::GetProblemSet(int num)
     }
     std::string correct_answer = GetCorrectAnswer(std::get<0>(problem));  //获取正确答案
     SetAnswerSet(problem, rand()%4 + 1, correct_answer);  //获取答案集
+    deletespace(problem);
     problem_set.push_back(problem);
     ++i;
   }
@@ -142,7 +143,16 @@ void MathProblem::SetAnswerSet(vtuple &problem, int correct_index, std::string c
     std::get<4>(problem) = correct_answer;
     std::get<5>(problem) = 'D';
   }
-  std::get<6>(problem) = '\0';
+  std::get<6>(problem) = 'F';
+}
+
+void MathProblem::deletespace(vtuple &problem) {
+  std::string spro = "";
+  std::stringstream ss(std::get<0>(problem));
+  std::get<0>(problem) = "";
+  while (ss >> spro) {
+    std::get<0>(problem) += spro;
+  }
 }
 
 std::string MathProblem::GetCorrectAnswer(std::string problem) {

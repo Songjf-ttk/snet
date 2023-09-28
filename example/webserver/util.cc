@@ -95,6 +95,7 @@ void Login(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         return;
     }
     json["success"] = true;
+    json["username"] = user->get_username();
     json["info"] = "login success";
     resp->Json(json);
 }
@@ -208,11 +209,12 @@ void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         resp->Json(json);
         return;
     }
+    std::string account = req->json()["account"];
     std::string oldpassword = req->json()["oldpassword"];
     std::string newpassword1 = req->json()["newpassword1"];
     std::string newpassword2 = req->json()["newpassword2"];
 
-    std::shared_ptr<User> user = std::make_shared<Student>();
+    std::shared_ptr<User> user = std::make_shared<Student>(account);
     int ret = user->EditPassword(oldpassword, newpassword1, newpassword2);
 
     if(ret == -1)
@@ -256,11 +258,12 @@ void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         return;
     }
     
+    std::string account = req->json()["account"];
     std::string type = req->json()["type"];
     int question_num = req->json()["num"];
     
     // 生成题目
-    std::shared_ptr<User> user = std::make_shared<Student>();
+    std::shared_ptr<User> user = std::make_shared<Student>(account);
     int ret = user->SetProblem(type, question_num);
 
     if(ret == -1)
@@ -286,19 +289,27 @@ void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         return;
     }
     std::string numstr = req->param("questionId");
+    std::string account = req->json()["account"];
     int num = std::stoi(numstr);
     // 获取题目
-    std::shared_ptr<User> user = std::make_shared<Student>();
+    std::shared_ptr<User> user = std::make_shared<Student>(account);
     vtuple question = user->get_problem(num);
 
-    json["question"] =  std::get<0>(question);
-    json["optionA"] = std::get<1>(question);
-    json["optionB"] = std::get<2>(question);
-    json["optionC"] = std::get<3>(question);
-    json["optionD"] = std::get<4>(question);
-    json["correctAns"] = std::get<5>(question);
-    json["currentAns"] = std::get<6>(question);
+    std::string q = std::get<0>(question);
+    std::string opa = std::get<1>(question);
+    std::string opb = std::get<2>(question);
+    std::string opc = std::get<3>(question);
+    std::string opd = std::get<4>(question);
+    char correctAns = std::get<5>(question);
+    char currentAns = std::get<6>(question);
 
+    json["question"] =  q;
+    json["optionA"] = opa;
+    json["optionB"] = opb;
+    json["optionC"] = opc;
+    json["optionD"] = opd;
+    json["correctAns"] = correctAns;
+    json["currentAns"] = currentAns;
     resp->Json(json);
 }
 
@@ -313,9 +324,31 @@ void GetScore(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
         resp->Json(json);
         return;
     }
-    std::shared_ptr<User> user = std::make_shared<Student>();
+    std::string account = req->json()["account"];
+    std::shared_ptr<User> user = std::make_shared<Student>(account);
     double score = user->get_score();
     json["success"] = true;
     json["score"] = score;
+    resp->Json(json);
+}
+
+void UploadAnswers(const wfrest::HttpReq *req, wfrest::HttpResp *resp)
+{
+    resp->add_header("Access-Control-Allow-Origin", "*");
+    resp->add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    resp->add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    std::string method = req->get_method();
+    wfrest::Json json;
+    if(method == "OPTIONS"){
+        resp->Json(json);
+        return;
+    }
+    std::string account = req->json()["account"];
+    std::string IdStr = req->json()["n_problem"];
+    int Id = std::stoi(IdStr);
+    std::string anwser = req->json()["anwser"];
+    std::shared_ptr<User> user = std::make_shared<Student>(account);
+    user->set_answer(Id, anwser.c_str()[0]);
+    json["success"] = true;
     resp->Json(json);
 }

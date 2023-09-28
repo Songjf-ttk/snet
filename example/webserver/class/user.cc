@@ -13,6 +13,14 @@ Student::Student() {
   problem_set_.clear();
 }
 
+Student::Student(std::string account) {
+  account_ = account;
+  password_ = "";
+  username_ = "";
+  num_problem_ = 0;
+  problem_set_.clear();
+}
+
 int Student::Login(std::string account, std::string password) {
   int state = -1;   //账号不存在
   std::ifstream read_file;
@@ -129,6 +137,7 @@ int Student::SetProblem(std::string type, int n) {
     math_problem = new SeniorMathProblem();
   }
   problem_set_ = math_problem->GetProblemSet(n);
+  WriteProblemSet();
   delete math_problem;
   if(problem_set_.size() != n) {
     return -1;
@@ -160,6 +169,32 @@ int Student::EditPassword(std::string oldpassword, std::string new_password_1, s
   return 1;
 }
 
+void Student::WriteProblemSet(){
+  std::ofstream write_file;
+  write_file.open("webserver/class/problems/"+account_, std::ios::out | std::ios::trunc);
+  for(int i = 0; i < problem_set_.size(); ++i) {
+    write_file << std::get<0>(problem_set_.at(i)) << " " << std::get<1>(problem_set_.at(i)) << " "
+               << std::get<2>(problem_set_.at(i)) << " " << std::get<3>(problem_set_.at(i)) << " "
+               << std::get<4>(problem_set_.at(i)) << " " << std::get<5>(problem_set_.at(i)) << " "
+               << std::get<6>(problem_set_.at(i)) << "\n";
+  }
+  write_file.close();
+}
+
+void Student::ReadProblemSet() {
+  problem_set_.clear();
+  std::ifstream read_file;
+  vtuple problem;
+  read_file.open("webserver/class/problems/"+account_, std::ios::in);
+  while(read_file >> std::get<0>(problem) >> std::get<1>(problem)
+                  >> std::get<2>(problem) >> std::get<3>(problem)
+                  >> std::get<4>(problem) >> std::get<5>(problem)
+                  >> std::get<6>(problem)) {
+    problem_set_.push_back(problem);
+  }
+  read_file.close();
+}
+
 vector_user Student::ReturnUser() {
   vector_user vuser;
   std::ifstream read_file;
@@ -174,12 +209,15 @@ vector_user Student::ReturnUser() {
 
 vtuple Student::get_problem(int n)
 {
+  ReadProblemSet();
   return problem_set_.at(n - 1);
 }
 
 void Student::set_answer(int n, char answer)
 {
+  ReadProblemSet();
   std::get<6>(problem_set_.at(n - 1)) = answer;
+  WriteProblemSet();
 }
 
 std::string Student::get_account()
@@ -194,6 +232,7 @@ std::string Student::get_username()
 
 double Student::get_score()
 {
+  ReadProblemSet();
   double correct_num = 0;
   for(int i = 0; i < num_problem_; ++i) {
     if(std::get<5>(problem_set_.at(i)) == std::get<6>(problem_set_.at(i))) {

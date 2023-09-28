@@ -27,12 +27,12 @@ void Signin(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 
 // api: /reset-password POST
-// in : json{oldpassword, newpassword1, newpassword2}
+// in : json{account, oldpassword, newpassword1, newpassword2}
 // out: json{success, info} 
 void ResetPassword(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 // api: /produce-paper POST
-// in : json{type, num}
+// in : json{account, type, num}
 // out: json{success}
 void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
@@ -42,10 +42,15 @@ void ProducePaper(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 //           optionD, correctAns, currentAns}
 void GetQuesion(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
-//api: /get-score GET
-//in : null
+//api: /get-score POST
+//in : json{account}
 //out: json{success, score}
 void GetScore(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
+
+//api: /upload-answer POST
+//in : json{account, n_problem, answer}
+//out: 
+void UploadAnswers(const wfrest::HttpReq *req, wfrest::HttpResp *resp);
 
 bool SendEmail(std::string &to_email, std::string &to_name, std::string &verifycode);
 

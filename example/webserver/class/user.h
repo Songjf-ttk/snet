@@ -52,6 +52,8 @@ class Student: public User {
  public:
   Student();
 
+  Student(std::string accout);
+
   //登录  登录成功返回 1，账号不存在返回 -1，密码错误返回 -2
   int Login(std::string account, std::string password);
 
@@ -80,6 +82,10 @@ class Student: public User {
   int EditPassword(std::string oldpassword, 
                    std::string new_password_1, 
                    std::string new_password_2);
+
+  void WriteProblemSet();
+
+  void ReadProblemSet();
 
   //获取所有账号信息
   vector_user ReturnUser();

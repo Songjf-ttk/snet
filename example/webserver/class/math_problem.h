@@ -55,6 +55,9 @@ class MathProblem {
   //string To double
   //函数使用顺序：  8
   virtual double GetData(std::string string_operator) = 0;
+
+    //删除空格
+  void deletespace(vtuple &problem);
 };
 
 //小学题目，派生MathProblem
