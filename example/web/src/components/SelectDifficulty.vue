@@ -44,7 +44,7 @@ export default (await import('vue')).defineComponent({
         //alert(JSON.stringify(returnData));
         axios.defaults.headers.post["Content-type"]="application/json";
         axios
-          .post("http://120.78.196.67:8000/produce-paper",JSON.stringify(returnData))
+          .post("http://localhost:8000/produce-paper",JSON.stringify(returnData))
           .then((res)=>{
             if(res.data.success == false){发送题目信息,获取返回
               alert("生成题目失败，请重新生成");

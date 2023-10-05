@@ -54,7 +54,7 @@ export default (await import('vue')).defineComponent({
       }
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/signinpre",JSON.stringify(returnData))
+        .post("http://localhost:8000/signinpre",JSON.stringify(returnData))
         .then((res)=>{
           if(res.data.success == true) {//发送验证码成功
             alert("发送成功");
@@ -75,7 +75,7 @@ export default (await import('vue')).defineComponent({
       }
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/signin",JSON.stringify(returnData))
+        .post("http://localhost:8000/signin",JSON.stringify(returnData))
         .then((res)=>{
           alert(res.data.info)
           if(res.data.success==true){//注册成功，并登录

@@ -31,7 +31,7 @@ export default {
       var returnData = {};
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/logout",JSON.stringify(""))
+        .post("http://localhost:8000/logout",JSON.stringify(""))
         .then((res)=>{
           if(res.data.success == true){发送题目信息,获取返回
             this.$router.push("/");

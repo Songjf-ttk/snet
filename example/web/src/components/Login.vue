@@ -34,7 +34,7 @@ export default (await import('vue')).defineComponent({
       //alert(JSON.stringify(returnData));
       axios.defaults.headers.post["Content-Type"] = "application/json";
       axios
-        .post("http://120.78.196.67:8000/login",JSON.stringify(returnData))
+        .post("http://localhost:8000/login",JSON.stringify(returnData))
         .then ( (res) =>{
           //alert(res.data.str);
           if(res.data.success == false){

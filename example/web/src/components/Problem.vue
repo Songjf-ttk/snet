@@ -60,7 +60,7 @@ export default (await import('vue')).defineComponent({
       //alert(JSON.stringify(returnData));
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/get-question/"+this.now_num,JSON.stringify(returnData))
+        .post("http://localhost:8000/get-question/"+this.now_num,JSON.stringify(returnData))
         .then((res)=>{
           //alert(res.data.question);
           //alert(res.data.optionA);
@@ -84,7 +84,7 @@ export default (await import('vue')).defineComponent({
       //alert(JSON.stringify(returnData));
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/upload-answer",JSON.stringify(returnData))
+        .post("http://localhost:8000/upload-answer",JSON.stringify(returnData))
         .then((res)=>{
         })
       this.answer = null;

@@ -34,7 +34,7 @@ export default {
       }
       axios.defaults.headers.post["Content-type"]="application/json";
       axios
-        .post("http://120.78.196.67:8000/get-score",JSON.stringify(returnData))
+        .post("http://localhost:8000/get-score",JSON.stringify(returnData))
         .then((res)=>{
           if(res.data.success == false){发送题目信息,获取返回
             alert("获取分数失败");
