@@ -79,9 +79,9 @@ export default (await import('vue')).defineComponent({
         .then((res)=>{
           alert(res.data.info)
           if(res.data.success==true){//注册成功，并登录
-            $store.state.account=this.email;
-            $store.state.password=this.password1;
-            $store.state.iflogin=true;
+            this.$store.state.account=this.email;
+            this.$store.state.password=this.password1;
+            this.$store.state.iflogin=true;
             this.$router.push("/select_difficulty");
           }
         })
