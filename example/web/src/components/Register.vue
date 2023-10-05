@@ -7,7 +7,7 @@
   </p>
   <p>验证码：<input type="txet" v-model="verification_code"/></p>
   <p>请输入用户名：&#8195&#8195&#8195&#8195&#8195&#8195&#8195&#8195</p>
-  <p>用户名：<input type="txet" v-model="verification_code"/></p>
+  <p>用户名：<input type="txet" v-model="username"/></p>
   <p>请输入密码：&#8195&#8195&#8195&#8195&#8195&#8195&#8195&#8195&#8195</p>
   <p>密码：&#8195<input type="password" v-model="password1"></p>
   <p>请重复输入密码：&#8195&#8195&#8195&#8195&#8195&#8195&#8195</p>
